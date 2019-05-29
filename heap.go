@@ -18,6 +18,12 @@ type Pointer struct {
 	ValIndex  int
 }
 
+var (
+	countlines int
+	countempty int
+	input      [][]int8
+)
+
 func NewHeap2(size int) *Heap {
 	arr := make([]*Pointer, 1, size)
 	arr[0] = &Pointer{}
@@ -86,12 +92,6 @@ func (h *Heap) Remove() (*Pointer, bool) {
 	return value, true
 }
 
-var (
-	countlines int
-	countempty int
-	input      [][]int
-)
-
 func main() {
 
 	inputfile, err := os.Open("input.txt")
@@ -115,14 +115,15 @@ func main() {
 		return
 	}
 
-	input = make([][]int, countlines, countlines)
+	input = make([][]int8, countlines, countlines)
 	for i := 0; scanner.Scan(); i++ {
 		tmpbuf := scanner.Text()
 		//fmt.Println(tmpbuf)
 		tmparr := strings.Split(tmpbuf, " ")
-		input[i] = make([]int, len(tmparr), len(tmparr))
+		input[i] = make([]int8, len(tmparr), len(tmparr))
 		for idx, item := range tmparr {
-			input[i][idx], _ = strconv.Atoi(item)
+			i8, _ := strconv.Atoi(item)
+			input[i][idx] = int8(i8)
 		}
 	}
 
@@ -146,8 +147,7 @@ func main() {
 			ok   bool
 		)
 		if item, ok = hp.Remove(); ok {
-			//fmt.Print(*item.Value, " ")
-			_, err := w.WriteString(strconv.Itoa(input[item.LineIndex][item.ValIndex]))
+			_, err := w.WriteString(strconv.Itoa(int(input[item.LineIndex][item.ValIndex])))
 			if err != nil {
 				panic(err)
 			}
